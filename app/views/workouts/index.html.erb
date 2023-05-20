@@ -1,0 +1,150 @@
+<div>
+  <div>
+    <h1>
+      List of all workouts
+    </h1>
+  </div>
+</div>
+
+<hr>
+
+<div>
+  <div>
+    <h2>
+      Add a new workout
+    </h2>
+
+    <form action="/insert_workout" method="post">
+      <div>
+        <label for="user_id_box">
+          User
+        </label>
+
+        <input type="text" id="user_id_box" name="query_user_id">
+      </div>
+
+      <div>
+        <label for="name_box">
+          Name
+        </label>
+
+        <input type="text" id="name_box" name="query_name">
+      </div>
+
+      <div>
+        <label for="date_box">
+          Date
+        </label>
+
+        <input type="date" id="date_box" name="query_date">
+      </div>
+
+      <div>
+        <label for="description_box">
+          Description
+        </label>
+
+        <input type="text" id="description_box" name="query_description">
+      </div>
+
+      <div>
+        <label for="image_box">
+          Image
+        </label>
+
+        <input type="text" id="image_box" name="query_image">
+      </div>
+
+      <button>
+        Create workout
+      </button>
+    </form>
+  </div>
+</div>
+
+<hr>
+<div>
+  <div>
+    <table border="1">
+      <tr>
+        <th>
+          ID
+        </th>
+
+        <th>
+          User
+        </th>
+
+        <th>
+          Name
+        </th>
+
+        <th>
+          Date
+        </th>
+
+        <th>
+          Description
+        </th>
+
+        <th>
+          Image
+        </th>
+
+        <th>
+          Created at
+        </th>
+
+        <th>
+          Updated at
+        </th>
+
+        <th>
+        </th>
+      </tr>
+
+      <% @list_of_workouts.each do |a_workout| %>
+      <tr>
+        <td>
+          <%= a_workout.id %>
+        </td>
+
+        <td>
+          <%= a_workout.user_id %>
+        </td>
+
+        <td>
+          <%= a_workout.name %>
+        </td>
+
+        <td>
+          <%= a_workout.date %>
+        </td>
+
+        <td>
+          <%= a_workout.description %>
+        </td>
+
+        <td>
+          <%= a_workout.image %>
+        </td>
+
+        <td>
+          <%= time_ago_in_words(a_workout.created_at) %> ago
+        </td>
+        <td>
+          <%= time_ago_in_words(a_workout.updated_at) %> ago
+        </td>
+
+        <td>
+          <a href="/workouts/<%= a_workout.id %>">
+            Show details
+          </a>
+        </td>
+      </tr>
+      <% end %>
+    </table>
+  </div>
+</div>
+
+<hr>
