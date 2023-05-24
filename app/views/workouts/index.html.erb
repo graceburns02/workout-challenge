@@ -1,8 +1,6 @@
-<div>
-  <div>
-    <h1>
-      Workout Feed
-    </h1>
+<div class="container">
+  <div class="text-center mt-5">
+    <h1>Workout Feed</h1>
   </div>
 </div>
 
@@ -10,66 +8,60 @@
 
 <% if session.fetch(:user_id) == nil %>
 <% else %>
-  <div>
-    <div>
-      <h2>
-        Add a new workout
-      </h2>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="text-center my-5">
+          <h2>Add a new workout</h2>
 
-      <form action="/insert_workout" method="post">
+          <form action="/insert_workout" method="post">
 
-        <div>
-          <label for="date_box">
-            Date
-          </label>
+            <div class="mb-3">
+              <label for="date_box" class="form-label">Date</label>
+              <input type="date" class="form-control" id="date_box" name="query_date">
+            </div>
 
-          <input type="date" id="date_box" name="query_date">
+            <div class="mb-3">
+              <label for="activity_box" class="form-label">Type of activity</label>
+              <input type="text" class="form-control" id="activity_box" name="query_activity">
+            </div>
+
+            <div class="mb-3">
+              <label for="description_box" class="form-label">Description of workout</label>
+              <input type="text" class="form-control" id="description_box" name="query_description">
+            </div>
+
+            <div class="mb-3">
+              <label for="image_box" class="form-label">Photo</label>
+              <input id="image_box" type="text" class="form-control" name="input_image" placeholder="Enter a URL for the image...">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add workout</button>
+          </form>
         </div>
-
-        <div>
-          <label for="activity_box">
-            Type of activity
-          </label>
-
-          <input type="text" id="activity_box" name="query_activity">
-        </div>
-
-        <div>
-          <label for="description_box">
-            Description of workout
-          </label>
-
-          <input type="text" id="description_box" name="query_description">
-        </div>
-
-        <div>
-          <label for="image_box">
-            Photo
-          </label>
-
-          <input id="image_box" type="text" name="input_image" placeholder="Enter a URL for the image...">
-        </div>
-
-        <button>
-          Add workout
-        </button>
-      </form>
+      </div>
     </div>
   </div>
+
   <hr>
 <% end %>
 
-<% @list_of_workouts.each do |a_workout| %>
-  <div class="card" style="width: 18rem;">
-    <h5 class="card-title"><%= a_workout.activity %></h5>
-    <img src="<%= a_workout.image %> " class="card-img-top" alt="...">
-    <div class="card-body">
-      <p class="card-text"><%= a_workout.description %></p>
-      <p><%= a_workout.date.strftime("%A, %b %e") %> </p>
-      <a href="/users/<%= a_workout.user.first_name %>" class="card-link"><%=a_workout.user.first_name%></a>
-    </div>
+<div class="container">
+  <div class="row row-cols-1 row-cols-md-3">
+    <% @list_of_workouts.each do |a_workout| %>
+
+      <div class="col mb-4">
+        <div class="card">
+          <h5 class="card-title text-center"><%= a_workout.activity %></h5>
+          <img src="<%= a_workout.image %>" class="card-img-top" alt="...">
+          <div class="card-body text-center">
+            <p class="card-text"><%= a_workout.description %></p>
+            <p><%= a_workout.date.strftime("%A, %b %e") %></p>
+            <a href="/users/<%= a_workout.user.first_name %>" class="card-link"><%= a_workout.user.first_name %></a>
+          </div>
+        </div>
+      </div>
+
+    <% end %>
   </div>
-<% end %>
-
-
-  
+</div>

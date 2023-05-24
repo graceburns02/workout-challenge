@@ -1,123 +1,79 @@
-<div>
-  <div>
-    <h1>
-      Workout #<%= @the_workout.id %> details
-    </h1>
+<div class="container">
+  <div class="text-center mt-5">
+    <h1>Workout #<%= @the_workout.id %> details</h1>
+  </div>
 
-    <div>
+  <div class="my-3">
+    <div class="d-flex justify-content-between">
       <div>
-        <a href="/workouts">
-          Go back
-        </a>
+        <a href="/workouts" class="btn btn-secondary">Go back</a>
       </div>
 
       <div>
-        <a href="/delete_workout/<%= @the_workout.id %>">
-          Delete workout
-        </a>
+        <a href="/delete_workout/<%= @the_workout.id %>" class="btn btn-danger">Delete workout</a>
       </div>
     </div>
-
-    <dl>
-      <dt>
-        User
-      </dt>
-      <dd>
-        <%= @the_workout.user_id %>
-      </dd>
-
-      <dt>
-        Name
-      </dt>
-      <dd>
-        <%= @the_workout.name %>
-      </dd>
-
-      <dt>
-        Date
-      </dt>
-      <dd>
-        <%= @the_workout.date %>
-      </dd>
-
-      <dt>
-        Description
-      </dt>
-      <dd>
-        <%= @the_workout.description %>
-      </dd>
-
-      <dt>
-        Image
-      </dt>
-      <dd>
-        <img src="<%= @the_workout.image %>">
-      </dd>
-
-      <dt>
-        Created at
-      </dt>
-      <dd>
-        <%= time_ago_in_words(@the_workout.created_at) %> ago
-      </dd>
-
-      <dt>
-        Updated at
-      </dt>
-      <dd>
-        <%= time_ago_in_words(@the_workout.updated_at) %> ago
-      </dd>
-    </dl>
   </div>
-</div>
 
-<hr>
+  <dl class="row">
+    <dt class="col-sm-3">User</dt>
+    <dd class="col-sm-9"><%= @the_workout.user_id %></dd>
 
+    <dt class="col-sm-3">Name</dt>
+    <dd class="col-sm-9"><%= @the_workout.name %></dd>
 
-<div>
-  <div>
-    <h2>
-      Edit workout
-    </h2>
+    <dt class="col-sm-3">Date</dt>
+    <dd class="col-sm-9"><%= @the_workout.date %></dd>
 
-    <form action="/modify_workout/<%= @the_workout.id %>"  method="post" >
+    <dt class="col-sm-3">Description</dt>
+    <dd class="col-sm-9"><%= @the_workout.description %></dd>
 
-      <div>
-        <label for="date_box">
-          Date
-        </label>
+    <dt class="col-sm-3">Image</dt>
+    <dd class="col-sm-9"><img src="<%= @the_workout.image %>"></dd>
 
-        <input type="date" id="date_box" name="query_date" value="<%= @the_workout.date %>">
+    <dt class="col-sm-3">Created at</dt>
+    <dd class="col-sm-9"><%= time_ago_in_words(@the_workout.created_at) %> ago</dd>
+
+    <dt class="col-sm-3">Updated at</dt>
+    <dd class="col-sm-9"><%= time_ago_in_words(@the_workout.updated_at) %> ago</dd>
+  </dl>
+
+  <hr>
+
+<div class="container">
+  <div class="text-center">
+    <h2>Edit workout</h2>
+
+    <form action="/modify_workout/<%= @the_workout.id %>" method="post" class="my-3">
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="date_box" class="form-label">Date</label>
+            <input type="date" id="date_box" name="query_date" value="<%= @the_workout.date %>" class="form-control">
+          </div>
+
+          <div class="mb-3">
+            <label for="activity_box" class="form-label">Activity</label>
+            <input type="text" id="activity_box" name="query_activity" value="<%= @the_workout.activity %>" class="form-control">
+          </div>
+
+          <div class="mb-3">
+            <label for="description_box" class="form-label">Description</label>
+            <input type="text" id="description_box" name="query_description" value="<%= @the_workout.description %>" class="form-control">
+          </div>
+
+          <div class="mb-3">
+            <label for="image_box" class="form-label">Image</label>
+            <input type="text" id="image_box" name="query_image" value="<%= @the_workout.image %>" class="form-control">
+          </div>
+
+          <button type="submit" class="btn btn-primary">Update workout</button>
+        </div>
       </div>
-
-      <div>
-        <label for="activity_box">
-          Activity
-        </label>
-
-        <input type="text" id="activity_box" name="query_activity" value="<%= @the_workout.activity %>">
-      </div>
-      <div>
-        <label for="description_box">
-          Description
-        </label>
-
-        <input type="text" id="description_box" name="query_description" value="<%= @the_workout.description %>">
-      </div>
-
-      <div>
-        <label for="image_box">
-          Image
-        </label>
-
-        <input type="text" id="image_box" name="query_image" value="<%= @the_workout.image %>">
-      </div>
-
-      <button>
-        Update workout
-      </button>
     </form>
   </div>
 </div>
 
-<hr>
+
+  <hr>
+</div>
