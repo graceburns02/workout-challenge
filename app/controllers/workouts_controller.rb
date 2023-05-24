@@ -1,4 +1,8 @@
 class WorkoutsController < ApplicationController
+
+  require "date"
+  Date.new 
+
   def index
     matching_workouts = Workout.all
 
@@ -17,13 +21,26 @@ class WorkoutsController < ApplicationController
     render({ :template => "workouts/show.html.erb" })
   end
 
+  def tracker
+    list_of_users = User.all
+    @users = list_of_users.order({:first_name => :desc})
+
+    t = Date.today
+    month_number = t.month
+    @current_month = Date::MONTHNAMES[month_number]
+
+
+    render({ :template => "workouts/tracker.html.erb" })
+  end 
+
   def create
     the_workout = Workout.new
-    the_workout.user_id = params.fetch("query_user_id")
-    the_workout.name = params.fetch("query_name")
+    the_workout.user_id = session.fetch(:user_id)
+    #the_workout.name = params.fetch("query_name")
     the_workout.date = params.fetch("query_date")
     the_workout.description = params.fetch("query_description")
-    the_workout.image = params.fetch("query_image")
+    the_workout.image = params.fetch("input_image")
+    the_workout.activity = params.fetch("query_activity")
 
     if the_workout.valid?
       the_workout.save
@@ -37,11 +54,12 @@ class WorkoutsController < ApplicationController
     the_id = params.fetch("path_id")
     the_workout = Workout.where({ :id => the_id }).at(0)
 
-    the_workout.user_id = params.fetch("query_user_id")
-    the_workout.name = params.fetch("query_name")
+    #the_workout.user_id = params.fetch("query_user_id")
+    #the_workout.name = params.fetch("query_name")
     the_workout.date = params.fetch("query_date")
     the_workout.description = params.fetch("query_description")
     the_workout.image = params.fetch("query_image")
+    the_workout.activity = params.fetch("query_activity")
 
     if the_workout.valid?
       the_workout.save

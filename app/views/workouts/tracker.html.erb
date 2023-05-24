@@ -1,0 +1,56 @@
+<h1> Workout Tracker </h1>
+
+<h2><%= @current_month%> Summary</h2>
+
+<table border="1">
+  <tr>
+    <th>Name</th>
+    <th>Week Total</th>
+    <th>Month Total</th>
+    <th>Amount Owed</th>
+  </tr>
+
+  <% @users.each do |user| %>
+    <tr>
+      <td><%= user.first_name %></td>
+      <td><%= user.current_week_workouts.count %></td>
+      <td><%= user.current_month_workouts.count %></td>
+      <td>
+        <% amount_owed = 0 %>
+        <% current_date = Date.today.beginning_of_month %>
+        <% while current_date.month == Date.today.month %>
+          <% weekly_count = user.workouts.where(date: current_date..(current_date + 6.days)).count %>
+          <% amount_owed += (3 - weekly_count) * 5 if weekly_count < 3 %>
+          <% current_date += 1.week %>
+        <% end %>
+        <%= number_to_currency(amount_owed) %>
+      </td>
+    </tr>
+  <% end %>
+</table>
+
+
+<h2> <%= @current_month%> Weekly Stats</h2>
+<table border="1">
+<% @users.each do |a_workout| %>
+  <tr>
+    <th>Week</th>
+    <th> <%= a_workout.first_name %> </th>
+    
+  <tr>
+
+  <% current_date = Date.today.beginning_of_month %>
+    <% while current_date.month == Date.today.month %>
+    <tr>
+     <td><%= current_date.strftime('%B %d') %> - <%= (current_date + 6.days).strftime('%B %d') %></td>
+      <% @users.each do |user| %>
+        <% workout_count = user.workouts.where(date: current_date..(current_date + 6.days)).count %>
+        <td><%= workout_count %></td>
+      <% end %>
+    </tr>
+    <% current_date += 1.week %>
+  <% end %>
+<% end %>
+  
+    
+</table>

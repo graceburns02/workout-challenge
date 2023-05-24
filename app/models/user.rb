@@ -21,4 +21,44 @@ class User < ApplicationRecord
   has_many(:workouts, { :class_name => "Workout", :foreign_key => "user_id", :dependent => :destroy })
 
   has_many(:comments, { :class_name => "Comment", :foreign_key => "user_id", :dependent => :destroy })
+
+
+  def current_month_workouts
+    current_month_start = Date.today.beginning_of_month
+    current_month_end = Date.today.end_of_month
+
+    workouts.where(date: current_month_start..current_month_end)
+  end
+
+  def current_week_workouts
+    current_week_start = Date.today.beginning_of_week(:monday)
+    current_week_end = current_week_start + 6.days
+
+    workouts.where(date: current_week_start..current_week_end)
+  end
+
+  def weekly_workout_count
+    current_date = Date.today.beginning_of_month
+    count = 0
+
+    while current_date.month == Date.today.month
+      week_start_date = current_date.beginning_of_week(start_day = :monday)
+      week_end_date = week_start_date + 6.days
+      count += workouts.where(date: week_start_date..week_end_date).count
+
+      current_date = week_end_date + 1.day
+    end
+
+    count
+  end
+
+  def owed
+    if weekly_workout_count < 3
+      (3 - weekly_workout_count) * 5
+
+    else
+      0
+    end 
+  end
+
 end

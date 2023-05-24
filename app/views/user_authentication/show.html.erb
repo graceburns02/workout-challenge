@@ -1,0 +1,193 @@
+<h1><%= @the_user.first_name %> <%= @the_user.last_name %> </h1>
+
+<% if session.fetch(:user_id) == @the_user.id %>
+
+<dl>
+  <dt>ID</dt>
+  <dd><%= @the_user.id %></dd>
+
+  <dt>Edit profile</dt>
+  <dd>
+    <form action="/update_user/<%= @the_user.id %>" >
+      <label for="browser_first_name">First name</label>
+      <input id="browser_first_name" type="text" name="input_first_name" value="<%= @the_user.first_name %>">
+
+      <label for="browser_last_name">Last name</label>
+      <input id="browser_last_name" type="text" name="input_last_name" value="<%= @the_user.last_name %>">
+
+      <label for="browser_email">Email</label>
+      <input id="browser_email" type="text" name="input_email" value="<%= @the_user.email %>">
+
+      <label for="browser_password">Password</label>
+      <input id="browser_password" type="text" name="input_password" placeholder="Enter new password..." >
+
+      <button>Update profile</button>
+    </form>
+  </dd>
+</dl>
+
+<% end %>
+
+<hr>
+
+<h2>Summary </h2>
+<table border="1">
+  <tr>
+    <th>
+      Current Month Count
+    </th>
+
+    <th>
+      Monthly Average
+    </th>
+
+    <th>
+      Top Activity
+    </th>
+
+    <th>
+      Total Workouts
+    </th>
+  <tr>
+
+  <tr>
+    <td>
+      <%= @current_workouts.count %>
+    </td>
+
+    <td>
+      <%= @monthly_average %>
+    </td>
+
+    <td>
+      <%= @most_frequent_activity %>
+    </td>
+
+    <td>
+      <%= @total_workouts %>
+    </td>
+
+  </tr>
+
+
+</table>
+
+<hr>
+
+<h2>
+  <%= @month %> Activity
+</h2>
+
+  <table border="1">
+    <tr>
+      <th>
+        Photo
+      </th>
+
+      <th>
+        Owner
+      </th>
+
+      <th>
+        Description
+      </th>
+
+      <th>
+        Date
+      </th>
+
+      <% if session.fetch(:user_id) == @the_user.id %>
+
+      <th>
+        Update
+      </th>
+
+      <th>
+        Delete
+      </th>
+
+      <% end %>
+
+    </tr>
+
+    
+    <% @current_workouts.order(date: :desc).each do |a_workout| %>
+    <tr>
+      <td>
+        <img src="<%= a_workout.image %>">
+      </td>
+
+      <td>
+        <%= a_workout.user.first_name %>
+      </td>
+
+      <td>
+        <%= a_workout.description %>
+      </td>
+
+      <td>
+        <%= a_workout.date.strftime("%A, %b %e") %>
+      </td>
+      
+      <% if session.fetch(:user_id) == @the_user.id %>
+      <td>
+        <a href="/workouts/<%= a_workout.id %>">Update</a>
+      </td>
+
+      <td>
+        <a href="/delete_workout/<%= a_workout.id %>">Delete</a>
+      </td>
+
+      <% end %>
+    <% end %>
+    </tr>
+  </table>
+
+  <hr>
+  
+  <h2>
+    Past Activity
+  </h2>
+
+    <table border="1">
+      <tr>
+        <th>
+          Photo
+        </th>
+
+        <th>
+          Owner
+        </th>
+
+        <th>
+          Description
+        </th>
+
+        <th>
+          Date
+        </th>
+
+      </tr>
+      
+      <% @past_workouts.order(date: :desc).each do |a_workout| %>
+      <tr>
+        <td>
+          <img src="<%= a_workout.image %>">
+        </td>
+
+        <td>
+          <%= a_workout.user.first_name %>
+        </td>
+
+        <td>
+          <%= a_workout.description %>
+        </td>
+
+        <td>
+          <%= a_workout.date.strftime("%A, %b %e") %>
+        </td>
+        
+      </tr>
+
+      <% end %>
+    </table>

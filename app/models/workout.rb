@@ -3,6 +3,7 @@
 # Table name: workouts
 #
 #  id          :integer          not null, primary key
+#  activity    :string
 #  date        :date
 #  description :string
 #  image       :string
@@ -11,6 +12,7 @@
 #  updated_at  :datetime         not null
 #  user_id     :integer
 #
+
 class Workout < ApplicationRecord
 
   belongs_to(:user, { :required => true, :class_name => "User", :foreign_key => "user_id", :counter_cache => true })

@@ -2,6 +2,46 @@ class UserAuthenticationController < ApplicationController
   # Uncomment line 3 in this file and line 5 in ApplicationController if you want to force users to sign in before any other actions.
   # skip_before_action(:force_user_sign_in, { :only => [:sign_up_form, :create, :sign_in_form, :create_cookie] })
 
+  require "date"
+  Date.new 
+
+  def index
+    matching_users = User.all
+
+    @list_of_users = matching_users.order({ :created_at => :desc })
+
+    render({ :template => "user_authentication/index.html.erb" })
+  end
+
+  def show
+    the_id = params.fetch("path_id")
+
+    matching_users = User.where({ :first_name => the_id })
+
+    @the_user = matching_users.at(0)
+
+    monthly_count = @the_user.workouts.group("strftime('%Y-%m', date)").count
+    @monthly_average = monthly_count.values.sum.to_f / monthly_count.length
+
+    @most_frequent_activity = @the_user.workouts.group(:activity).count.max_by { |_activity, count| count }&.first
+
+    @total_workouts = @the_user.workouts.count
+
+    t = Date.today
+    month_number = t.month
+    @month = Date::MONTHNAMES[month_number]
+    current_year = t.year
+
+    current_month = Time.now.month
+    current_year = Time.now.year
+
+    @current_workouts = @the_user.workouts.where("strftime('%m', date) = ? AND strftime('%Y', date) = ?", current_month.to_s.rjust(2, '0'), current_year.to_s)
+
+    @past_workouts = @the_user.workouts.where.not("strftime('%m', date) = ? AND strftime('%Y', date) = ?", current_month.to_s.rjust(2, '0'), current_year.to_s)
+
+    render({ :template => "user_authentication/show.html.erb" })
+  end
+
   def sign_in_form
     render({ :template => "user_authentication/sign_in.html.erb" })
   end
@@ -43,9 +83,7 @@ class UserAuthenticationController < ApplicationController
     @user.last_name = params.fetch("query_last_name")
     @user.password = params.fetch("query_password")
     @user.password_confirmation = params.fetch("query_password_confirmation")
-    @user.private = params.fetch("query_private", false)
-    @user.workout_count = params.fetch("query_workout_count")
-    @user.workouts_count = params.fetch("query_workouts_count")
+  
 
     save_status = @user.save
 
