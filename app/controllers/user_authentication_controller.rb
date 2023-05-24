@@ -5,6 +5,7 @@ class UserAuthenticationController < ApplicationController
   require "date"
   Date.new 
 
+
   def index
     matching_users = User.all
 

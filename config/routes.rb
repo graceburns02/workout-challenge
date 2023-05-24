@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-
+  
   # Homepage
 
   get("/", { :controller => "workouts", :action => "index" })

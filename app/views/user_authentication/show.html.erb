@@ -68,126 +68,22 @@
     </td>
 
   </tr>
-
-
-</table>
-
-<hr>
+  </table>
 
 <h2>
   <%= @month %> Activity
 </h2>
 
-  <table border="1">
-    <tr>
-      <th>
-        Photo
-      </th>
+<% @current_workouts.order(date: :desc).each do |a_workout| %>
+  <div class="card" style="width: 18rem;">
+    <h5 class="card-title"><%= a_workout.activity %></h5>
+    <img src="<%= a_workout.image %> " class="card-img-top" alt="...">
+    <div class="card-body">
+      <p class="card-text"><%= a_workout.description %></p>
+      <p><%= a_workout.date.strftime("%A, %b %e") %> </p>
+      <a href="/users/<%= a_workout.user.first_name %>" class="card-link"><%=a_workout.user.first_name%></a>
+    </div>
+  </div>
+<% end %>
 
-      <th>
-        Owner
-      </th>
 
-      <th>
-        Description
-      </th>
-
-      <th>
-        Date
-      </th>
-
-      <% if session.fetch(:user_id) == @the_user.id %>
-
-      <th>
-        Update
-      </th>
-
-      <th>
-        Delete
-      </th>
-
-      <% end %>
-
-    </tr>
-
-    
-    <% @current_workouts.order(date: :desc).each do |a_workout| %>
-    <tr>
-      <td>
-        <img src="<%= a_workout.image %>">
-      </td>
-
-      <td>
-        <%= a_workout.user.first_name %>
-      </td>
-
-      <td>
-        <%= a_workout.description %>
-      </td>
-
-      <td>
-        <%= a_workout.date.strftime("%A, %b %e") %>
-      </td>
-      
-      <% if session.fetch(:user_id) == @the_user.id %>
-      <td>
-        <a href="/workouts/<%= a_workout.id %>">Update</a>
-      </td>
-
-      <td>
-        <a href="/delete_workout/<%= a_workout.id %>">Delete</a>
-      </td>
-
-      <% end %>
-    <% end %>
-    </tr>
-  </table>
-
-  <hr>
-  
-  <h2>
-    Past Activity
-  </h2>
-
-    <table border="1">
-      <tr>
-        <th>
-          Photo
-        </th>
-
-        <th>
-          Owner
-        </th>
-
-        <th>
-          Description
-        </th>
-
-        <th>
-          Date
-        </th>
-
-      </tr>
-      
-      <% @past_workouts.order(date: :desc).each do |a_workout| %>
-      <tr>
-        <td>
-          <img src="<%= a_workout.image %>">
-        </td>
-
-        <td>
-          <%= a_workout.user.first_name %>
-        </td>
-
-        <td>
-          <%= a_workout.description %>
-        </td>
-
-        <td>
-          <%= a_workout.date.strftime("%A, %b %e") %>
-        </td>
-        
-      </tr>
-
-      <% end %>
-    </table>
