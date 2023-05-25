@@ -80,7 +80,9 @@
           <p class="card-text"><%= a_workout.description %></p>
           <p><%= a_workout.date.strftime("%A, %b %e") %></p>
           <a href="/users/<%= a_workout.user.first_name %>" class="card-link"><%= a_workout.user.first_name %></a>
+          <% if session.fetch(:user_id) == @the_user.id %>
           <a href="/workouts/<%= a_workout.id %>" class="card-link">Edit workout</a>
+          <% end %>
         </div>
       </div>
     </div>
@@ -100,6 +102,9 @@
           <p class="card-text"><%= a_workout.description %></p>
           <p><%= a_workout.date.strftime("%A, %b %e") %></p>
           <a href="/users/<%= a_workout.user.first_name %>" class="card-link"><%= a_workout.user.first_name %></a>
+          <% if session.fetch(:user_id) == @the_user.id %>
+          <a href="/workouts/<%= a_workout.id %>" class="card-link">Edit workout</a>
+          <% end %>
         </div>
       </div>
     </div>

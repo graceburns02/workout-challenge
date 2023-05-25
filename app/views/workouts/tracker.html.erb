@@ -45,7 +45,7 @@
           <td class="text-center font-weight-bold <%= 'bg-success text-white' if user == highest_month_count %>"><%= user.first_name %></td>
           <td class="text-center <%= 'bg-success text-white' if user == highest_month_count %>"><%= user.current_week_workouts.count %></td>
           <td class="text-center <%= 'bg-success text-white' if user == highest_month_count %> <%= 'text-success' if user == highest_month_count %>"><%= user.current_month_workouts.count %></td>
-          <td class="text-center <%= 'bg-danger text-white' if (3 - user.current_week_workouts.count) * 5 > 0 %>">
+          
             <% amount_owed = 0 %>
             <% current_date = Date.today.beginning_of_month %>
             <% while current_date.month == Date.today.month %>
@@ -53,6 +53,7 @@
               <% amount_owed += (3 - weekly_count) * 5 if weekly_count < 3 %>
               <% current_date += 1.week %>
             <% end %>
+          <td class="text-center <%= 'bg-danger text-white' if amount_owed * 5 > 0 %>">
             <%= number_to_currency(amount_owed) %>
           </td>
         </tr>
