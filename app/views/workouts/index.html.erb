@@ -34,8 +34,8 @@
             </div>
 
             <div class="mb-3">
-              <label for="image_box" class="form-label">Photo</label>
-              <input id="image_box" type="file" id="url" class="form-control" name="url">
+              <label for="url" class="form-label">Photo</label>
+              <input  type="file" id="url" class="form-control" name="url">
             </div>
 
             <button type="submit" class="btn btn-primary">Add workout</button>
@@ -55,7 +55,7 @@
       <div class="col mb-4">
         <div class="card">
           <h5 class="card-title text-center"><%= a_workout.activity %></h5>
-          <img src="<%= a_workout.image %>" class="card-img-top" alt="...">
+          <img src="<%= a_workout.url %>" class="card-img-top" alt="...">
           <div class="card-body text-center">
             <p class="card-text"><%= a_workout.description %></p>
             <p><%= a_workout.date.strftime("%A, %b %e") %></p>
