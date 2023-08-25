@@ -25,7 +25,28 @@
 
             <div class="mb-3">
               <label for="activity_box" class="form-label">Type of activity</label>
-              <input type="text" class="form-control" id="activity_box" name="query_activity">
+              <input list="Activities" id="activity_box" name="query_activity">
+              <datalist id="Activities">
+                <option value="4+ Mile Walk"></option>
+                <option value="Run"></option>
+                <option value="Yoga"></option>
+                <option value="Indoor Cycle"></option>
+                <option value="Outdoor Bike Ride"></option>
+                <option value="Pilates"></option>
+                <option value="Dance"></option>
+                <option value="Barre"></option>
+                <option value="Swim"></option>
+                <option value="Tennis"></option>
+                <option value="Squash"></option>
+                <option value="Pickleball"></option>
+                <option value="Ski/Snowboard"></option>
+                <option value="Rock Climb"></option>
+        
+                <% Activity.all.each do |activity| %>
+                <option value="<%= activity.name %>"></option>
+                <% end %>
+              </datalist>
+              
             </div>
 
             <div class="mb-3">

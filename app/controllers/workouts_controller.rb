@@ -34,6 +34,23 @@ class WorkoutsController < ApplicationController
   end 
 
   def create
+    activity_name = params.fetch("query_activity").strip.downcase
+
+    # Try finding an existing activity, case-insensitively.
+    existing_activity = Activity.where("LOWER(name) = ?", activity_name).first
+
+    if existing_activity.nil?
+      # No existing activity found. Let's try to create one.
+      activity = Activity.new(name: activity_name)
+      unless activity.save
+        # The activity wasn't saved (probably due to the uniqueness constraint).
+        redirect_to("/workouts", :alert => "Activity already exists in the list.")
+        return
+      end
+    end
+    
+    # ... rest of your code ...
+
     the_workout = Workout.new
     the_workout.user_id = session.fetch(:user_id)
     #the_workout.name = params.fetch("query_name")
@@ -41,8 +58,8 @@ class WorkoutsController < ApplicationController
     the_workout.description = params.fetch("query_description")
     the_workout.url = params.fetch(:url)
     #the_workout.image = params.fetch("input_image")
-    the_workout.activity = params.fetch("query_activity")
-    
+    #the_workout.activity = params.fetch("query_activity")
+    the_workout.activity = activity_name  # Or store the activity ID, based on your schema.
 
     if the_workout.valid?
       the_workout.save
@@ -50,6 +67,10 @@ class WorkoutsController < ApplicationController
     else
       redirect_to("/workouts", { :alert => the_workout.errors.full_messages.to_sentence })
     end
+  end
+
+  def predefined_activities
+    ["4+ mile walk", "Run", "Indoor Cycle", "Outdoor Bike Ride", "Yoga", "Swim", "Dance", "Ski/Snowboard", "Pilates", "Weights", "Barre", "Other"]
   end
 
   def update
