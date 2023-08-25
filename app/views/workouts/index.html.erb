@@ -14,7 +14,9 @@
         <div class="text-center my-5">
           <h2>Add a new workout</h2>
 
-          <form action="/insert_workout" method="post">
+         
+          <form action="/insert_workout" method="post" class="form-horizontal" enctype="multipart/form-data">
+
 
             <div class="mb-3">
               <label for="date_box" class="form-label">Date</label>
@@ -33,7 +35,7 @@
 
             <div class="mb-3">
               <label for="image_box" class="form-label">Photo</label>
-              <input id="image_box" type="text" class="form-control" name="input_image" placeholder="Enter a URL for the image...">
+              <input id="image_box" type="file" id="url" class="form-control" name="url">
             </div>
 
             <button type="submit" class="btn btn-primary">Add workout</button>

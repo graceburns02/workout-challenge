@@ -39,8 +39,10 @@ class WorkoutsController < ApplicationController
     #the_workout.name = params.fetch("query_name")
     the_workout.date = params.fetch("query_date")
     the_workout.description = params.fetch("query_description")
-    the_workout.image = params.fetch("input_image")
+    the_workout.image = params.fetch(:url)
+    #the_workout.image = params.fetch("input_image")
     the_workout.activity = params.fetch("query_activity")
+    
 
     if the_workout.valid?
       the_workout.save
