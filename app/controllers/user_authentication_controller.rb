@@ -21,6 +21,10 @@ class UserAuthenticationController < ApplicationController
 
     @the_user = matching_users.at(0)
 
+    matching_workouts = Workout.all
+
+    @list_of_workouts = matching_workouts.order({ :created_at => :desc })
+
     monthly_count = @the_user.workouts.group("strftime('%Y-%m', date)").count
     @monthly_average = monthly_count.values.sum.to_f / monthly_count.length
 
@@ -98,6 +102,22 @@ class UserAuthenticationController < ApplicationController
   end
     
   def edit_profile_form
+
+    the_id = params.fetch("path_id")
+
+    matching_users = User.where({ :first_name => the_id })
+
+    @the_user = matching_users.at(0)
+    render({ :template => "user_authentication/edit_profile.html.erb" })
+  end
+
+  def edit
+
+    the_id = params.fetch("path_id")
+
+    matching_users = User.where({ :first_name => the_id })
+
+    @the_user = matching_users.at(0)
     render({ :template => "user_authentication/edit_profile.html.erb" })
   end
 
@@ -127,5 +147,32 @@ class UserAuthenticationController < ApplicationController
     
     redirect_to("/", { :notice => "User account cancelled" })
   end
+
+  def deactivate
+    @the_user = User.find(params[:id])
+    @the_user.update(active: false)
+    redirect_to user_path(@the_user), notice: "Profile has been deactivated."
+  end
+
+  def activate
+    @the_user = User.find(params[:id])
+    @the_user.update(active: true)
+    redirect_to user_path(@the_user), notice: "Profile has been activated."
+  end
+  
+  def injury
+    the_id = params.fetch("path_id")
+    matching_users = User.where({ :first_name => the_id })
+    @the_user = matching_users.at(0)
+  
+    @injury = Injury.new # This initializes a new injury instance
+
+    @user_injuries = @the_user.injuries.order(start_date: :desc)
+
+  
+    render({ :template => "user_authentication/injury.html.erb" })
+  end
+  
+
  
 end

@@ -25,9 +25,15 @@ class WorkoutsController < ApplicationController
     list_of_users = User.all
     @users = list_of_users.order({:first_name => :desc})
 
+
     t = Date.today
     month_number = t.month
     @current_month = Date::MONTHNAMES[month_number]
+
+    @users_injuries = {}
+    @active_users.each do |user|
+    @users_injuries[user.id] = user.injuries.where(start_date: Date.today.beginning_of_month..Date.today.end_of_month)
+    end
 
 
     render({ :template => "workouts/tracker.html.erb" })

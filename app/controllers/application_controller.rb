@@ -16,4 +16,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  before_action :set_active_users
+
+  private
+
+  def set_active_users
+    @active_users = User.where(active: true) # Assuming there's an `active` column in the users table
+  end
+
 end

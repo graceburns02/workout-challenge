@@ -14,44 +14,73 @@
     <%= stylesheet_link_tag 'application', media: 'all' %>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    
 
 
   </head>
 
   <body>
 
-  <nav class="navbar navbar-expand-lg bg-light">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">Workout Challenge</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="/">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/tracker">Tracker</a>
-        </li>
-        <% if session.fetch(:user_id) == nil %>
-        <li class="nav-item">
-          <a class="nav-link" href="/user_sign_up">Sign Up</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/user_sign_in">Sign In</a>
-        </li>
-      <% else %>
-        <li class="nav-item">
-          <a class="nav-link" href="/user_sign_out">Sign Out</a>
-        </li>
-      <% end %>
+    <nav class="navbar navbar-expand-lg bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Workout Challenge</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="/">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/tracker">Tracker</a>
+            </li>
+            <div>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="profilesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Profiles
+              </a>
+              
+              <ul class="dropdown-menu" aria-labelledby="profilesDropdown">
+                            <% @active_users.each do |user| %>
+                                <li><a class="dropdown-item" href="/users/<%= user.first_name %>"><%= user.first_name %></a></li>
+                            <% end %>
+              </ul>
+            </li>
+            </div>
+            <% if session.fetch(:user_id) == nil %>
+            <li class="nav-item">
+              <a class="nav-link" href="/user_sign_up">Sign Up</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/user_sign_in">Sign In</a>
+            </li>
+          <% else %>
+          
+            <div>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="profilesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            My Account
+              </a>
+              
+              <ul class="dropdown-menu" aria-labelledby="profilesDropdown">
+                  <li><a class="dropdown-item" href="/users/<%= @current_user.first_name %>/edit_profile">Edit Profile</a></li>
+                  <li><a class="dropdown-item" href="/users/<%= @current_user.first_name %>/injuries">Log Injury</a></li>
+                  <li class="dropdown-item" href="/user_sign_out">Sign Out</a></li>
+            </li>
+              </ul>
+            </li>
+            </div>
+          <% end %>
+            
+          </ul>
         
-      </ul>
-     
-    </div>
-  </div>
-</nav>
+        </div>
+      </div>
+    </nav>
 
 
      

@@ -2,37 +2,19 @@
   .table-bordered {
     border: 2px solid #333;
   }
-
-  .bg-secondary {
-    background-color: #f2f2f2;
-  }
-
-  .bg-success {
-    background-color: #93c47d;
-  }
-
-  .bg-danger {
-    background-color: #f8d7da;
-  }
-
-  .text-white {
-    color: #ffffff;
-  }
 </style>
 
 <div class="container text-center mt-5">
-  <h1>Workout Tracker</h1>
+  <h1 class="display-4">Workout Tracker</h1>
 </div>
 
-<hr>
-
 <div class="container mt-5">
-  <h2 class="text-center"><%= @current_month %> Summary</h2>
+  <h2 class="display-5 text-center mb-4"><%= @current_month %> Summary</h2>
 
-  <table class="table table-bordered">
-    <thead class="text-center bg-secondary text-white">
+  <table class="table table-hover table-bordered">
+    <thead class="bg-secondary text-white">
       <tr>
-        <th class="text-center font-weight-bold">Name</th>
+        <th class="text-center">Name</th>
         <th class="text-center">Current Week Total</th>
         <th class="text-center">Month Total</th>
         <th class="text-center">Amount Owed</th>
@@ -40,19 +22,20 @@
     </thead>
     <tbody>
       <% highest_month_count = @users.max_by { |user| user.current_month_workouts.count } %>
-      <% @users.each do |user| %>
+      <% @active_users.each do |user| %>
         <tr>
           <td class="text-center font-weight-bold <%= 'bg-success text-white' if user == highest_month_count %>"><%= user.first_name %></td>
           <td class="text-center <%= 'bg-success text-white' if user == highest_month_count %>"><%= user.current_week_workouts.count %></td>
           <td class="text-center <%= 'bg-success text-white' if user == highest_month_count %> <%= 'text-success' if user == highest_month_count %>"><%= user.current_month_workouts.count %></td>
-          
-            <% amount_owed = 0 %>
-            <% current_date = Date.today.beginning_of_month %>
-            <% while current_date.month == Date.today.month %>
-              <% weekly_count = user.workouts.where(date: current_date..(current_date + 6.days)).count %>
+          <% amount_owed = 0 %>
+          <% current_date = Date.today.beginning_of_month %>
+          <% while current_date.month == Date.today.month %>
+            <% weekly_count = user.workouts.where(date: current_date..(current_date + 6.days)).count %>
+            <% unless user.injured_during?(current_date..(current_date + 6.days)) %>
               <% amount_owed += (3 - weekly_count) * 5 if weekly_count < 3 %>
-              <% current_date += 1.week %>
             <% end %>
+            <% current_date += 1.week %>
+          <% end %>
           <td class="text-center <%= 'bg-danger text-white' if amount_owed * 5 > 0 %>">
             <%= number_to_currency(amount_owed) %>
           </td>
@@ -62,14 +45,18 @@
   </table>
 </div>
 
+<!-- ... The same for other tables ... -->
+
+
+
 <div class="container mt-5">
-  <h2 class="text-center"><%= @current_month %> Weekly Stats</h2>
+  <h2 class="display-5 text-center mb-4"><%= @current_month %> Weekly Stats</h2>
 
   <table class="table table-bordered">
     <thead class="text-center bg-secondary text-white">
       <tr>
         <th class="text-center font-weight-bold">Week</th>
-        <% @users.each do |user| %>
+        <% @active_users.each do |user| %>
           <th class="text-center"><%= user.first_name %></th>
         <% end %>
       </tr>
@@ -79,21 +66,59 @@
       <% while current_date.month == Date.today.month %>
         <tr>
           <td class="text-center font-weight-bold"><%= current_date.strftime('%B %d') %> - <%= (current_date + 6.days).strftime('%B %d') %></td>
-          <% @users.each do |user| %>
+          <% @active_users.each do |user| %>
             <% workout_count = user.workouts.where(date: current_date..(current_date + 6.days)).count %>
-            <td class="text-center <%= 'bg-success text-white' if workout_count == @users.map { |u| u.workouts.where(date: current_date..(current_date + 6.days)).count }.max %>"><%= workout_count %></td>
+            <td class="text-center <%= 'bg-success text-white' if workout_count == @users.map { |u| u.workouts.where(date: current_date..(current_date + 6.days)).count }.max %>">
+              <% if current_date > Date.today %>
+                -
+              <% else %>
+                <%= workout_count %>
+              <% end %>
+            </td>
           <% end %>
         </tr>
         <% current_date += 1.week %>
       <% end %>
     </tbody>
   </table>
+
+
 </div>
+
+<hr>
+<div class="container mt-5">
+  <h2 class="display-5 text-center mb-4"><%= @current_month %> Injuries</h2>
+
+  <table class="table table-bordered">
+    <thead class="text-center bg-secondary text-white">
+      <tr>
+        <th class="text-center font-weight-bold">Name</th>
+        <th class="text-center">Injury/Sickness Description</th>
+        <th class="text-center">Start Date</th>
+        <th class="text-center">End Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @active_users.each do |user| %>
+        <% user_injuries = @users_injuries[user.id] %>
+        <% user_injuries.each do |injury| %>
+          <tr>
+            <td class="text-center font-weight-bold"><%= user.first_name %></td>
+            <td class="text-center"><%= injury.description %></td>
+            <td class="text-center"><%= injury.start_date.strftime('%B %d, %Y') %></td>
+            <td class="text-center"><%= injury.end_date ? injury.end_date.strftime('%B %d, %Y') : "Ongoing" %></td>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
 
 <hr>
 
 <div class="container mt-5">
-  <h2 class="text-center">Settlements for Past Months</h2>
+  <h2 class="display-5 text-center mb-4">Settle Up</h2>
 
   <table class="table table-bordered">
     <thead class="text-center bg-secondary text-white">
@@ -116,7 +141,7 @@
         <% # Determine the user with the highest workout count for the past month %>
         <% top_user = @users.max_by { |user| user.workouts.where(date: past_month.all_month).count } %>
 
-        <% @users.each_with_index do |user, index| %>
+        <% @active_users.each_with_index do |user, index| %>
           <tr <% if index == @users.size - 1 %>style="border-bottom: 3px solid black;"<% end %>>
             <td class="text-center font-weight-bold"><%= past_month.strftime('%B %Y') %></td>
             <td class="text-center"><%= user.first_name %></td>
@@ -126,9 +151,14 @@
             <% current_date = past_month.beginning_of_month %>
             <% while current_date.month == past_month.month %>
               <% weekly_count = user.workouts.where(date: current_date..(current_date + 6.days)).count %>
-              <% amount_owed += (3 - weekly_count) * 5 if weekly_count < 3 %>
+              
+             
+              <% unless user.injured_during?(current_date..(current_date + 6.days)) %>
+                <% amount_owed += (3 - weekly_count) * 5 if weekly_count < 3 %>
+              <% end %>
+              
               <% current_date += 1.week %>
-            <% end %>
+            <% end %>     
             <td class="text-center"><%= number_to_currency(amount_owed) %></td>
 
             <% # Check if the user is the top user for this month %>
@@ -144,5 +174,3 @@
     </tbody>
   </table>
 </div>
-
-

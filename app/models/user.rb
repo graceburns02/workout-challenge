@@ -3,6 +3,7 @@
 # Table name: users
 #
 #  id              :integer          not null, primary key
+#  active          :boolean          default(TRUE)
 #  email           :string
 #  first_name      :string
 #  last_name       :string
@@ -22,6 +23,7 @@ class User < ApplicationRecord
 
   has_many(:comments, { :class_name => "Comment", :foreign_key => "user_id", :dependent => :destroy })
 
+  has_many(:injuries)
 
   def current_month_workouts
     current_month_start = Date.today.beginning_of_month
@@ -59,6 +61,10 @@ class User < ApplicationRecord
     else
       0
     end 
+  end
+
+  def injured_during?(date_range)
+    injuries.where("start_date <= ? AND end_date >= ?", date_range.end, date_range.begin).exists?
   end
 
 end

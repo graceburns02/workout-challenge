@@ -68,6 +68,20 @@ Rails.application.routes.draw do
   get("/users", { :controller => "user_authentication", :action => "index" })
 
   get("/users/:path_id", { :controller => "user_authentication", :action => "show" })
+
+  get("/users/:path_id/edit_profile", { :controller => "user_authentication", :action => "edit" })
+
+  get("/users/:path_id/injuries", { :controller => "user_authentication", :action => "injury" })
+
+  # ACTIVATE OR DEACTIVATE
+
+  resources :users, controller: 'user_authentication' do
+    member do
+      patch :deactivate
+      patch :activate
+    end
+  end
+  
   # ------------------------------
 
   # SIGN IN FORM
@@ -79,5 +93,9 @@ Rails.application.routes.draw do
   get("/user_sign_out", { :controller => "user_authentication", :action => "destroy_cookies" })
              
   #------------------------------
+
+  # INJURIES
+  resources :injuries, only: [:new, :create]
+
 
 end

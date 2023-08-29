@@ -1,0 +1,55 @@
+<div class="container mt-5">
+  <h1 class="text-center">Log an Injury or Sickness</h1>
+
+  <%= form_for @injury, html: { class: 'mt-4' } do |f| %>
+  
+    <div class="mb-3">
+      <%= f.label :description, "Describe the Injury/Sickness:", class: 'form-label' %>
+      <%= f.text_area :description, class: 'form-control', rows: '5' %>
+    </div>
+
+    <div class="mb-3">
+      <%= f.label :start_date, "Start Date:", class: 'form-label' %>
+      <%= f.date_select :start_date, class: 'form-control', prompt: { day: 'Select day', month: 'Select month', year: 'Select year' } %>
+    </div>
+
+    <div class="mb-3">
+      <%= f.label :end_date, "End Date:", class: 'form-label' %>
+      <%= f.date_select :end_date, class: 'form-control', prompt: { day: 'Select day', month: 'Select month', year: 'Select year' } %>
+    </div>
+
+    <%= f.submit "Log Injury", class: 'btn btn-primary' %>
+  <% end %>
+</div>
+
+
+<hr>
+
+<div class="container mt-5">
+
+
+  <%= form_for @injury, html: { class: 'mt-4' } do |f| %>
+    <!-- ... existing form elements ... -->
+  <% end %>
+
+  <h1 class="text-center mt-5">Injury History</h1>
+
+  <table class="table table-hover mt-3">
+    <thead class="thead-dark">
+      <tr>
+        <th>Description</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @user_injuries.each do |injury| %>
+        <tr>
+          <td><%= injury.description %></td>
+          <td><%= injury.start_date.strftime("%B %d, %Y") %></td>
+          <td><%= injury.end_date.strftime("%B %d, %Y") %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

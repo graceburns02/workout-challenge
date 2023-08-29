@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_08_25_204227) do
+ActiveRecord::Schema.define(version: 2023_08_29_180428) do
 
   create_table "activities", force: :cascade do |t|
     t.string "name"
@@ -27,6 +27,16 @@ ActiveRecord::Schema.define(version: 2023_08_25_204227) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "injuries", force: :cascade do |t|
+    t.integer "user_id"
+    t.text "description"
+    t.date "start_date"
+    t.date "end_date"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_injuries_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email"
     t.string "first_name"
@@ -37,6 +47,7 @@ ActiveRecord::Schema.define(version: 2023_08_25_204227) do
     t.integer "workouts_count"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "active", default: true
   end
 
   create_table "workouts", force: :cascade do |t|
@@ -51,4 +62,5 @@ ActiveRecord::Schema.define(version: 2023_08_25_204227) do
     t.string "url"
   end
 
+  add_foreign_key "injuries", "users"
 end
