@@ -81,10 +81,86 @@
             <p class="card-text"><%= a_workout.description %></p>
             <p><%= a_workout.date.strftime("%A, %b %e") %></p>
             <a href="/users/<%= a_workout.user.first_name %>" class="card-link"><%= a_workout.user.first_name %></a>
+            <p><form action="/insert_comment" method="post">
+              <input type="hidden" name="query_workout_id" value="<%= a_workout.id %>">
+              <input type="hidden" name="query_user_id" value="<%= session.fetch(:user_id) %>">
+              <div class="input-group mb-3">
+               <input type="text" class="form-control" placeholder="Add a comment..." name="query_body">
+               <button class="btn btn-primary" type="submit">Submit</button>
+              </div>
+            </form></p>
+          </div>
+          <hr>
+          <div class="comments-section text-center">
+            <h5>Comments:</h5>
+            <% a_workout.comments.each do |comment| %>
+              <div id="comment-<%= comment.id %>">
+                <p class="comment-text"><%= comment.body %>
+                <% if session[:user_id] == comment.user_id %>
+                  <a href="javascript:void(0);" class="edit-comment-link">Edit</a>
+                  <a href="/delete_comment/<%= comment.id %>" onclick="return confirm('Are you sure you want to delete this comment?')">Delete</a>
+
+
+                  <!-- Hidden form for inline editing -->
+                  <form action="/modify_comment/<%= comment.id %>" method="post" style="display: none;" class="edit-comment-form">
+                    <input type="hidden" name="query_workout_id" value="<%= a_workout.id %>">
+
+                    <input type="hidden" name="query_user_id" value="<%= session.fetch(:user_id) %>">
+                    
+                    <div class="input-group mb-3">
+                      <input type="text" class="form-control" placeholder="Edit your comment..." name="query_body" value="<%= comment.body %>">
+                      <button class="btn btn-primary" type="submit">Update</button>
+                    </div>
+                  </form></p>
+
+                <% end %>
+              </div>
+            <% end %>
+
+            <script>
+              // Use JavaScript to handle the inline editing functionality
+              document.querySelectorAll('.edit-comment-link').forEach(function(editLink) {
+                editLink.addEventListener('click', function() {
+                  let commentDiv = editLink.closest('div');
+                  commentDiv.querySelector('.comment-text').style.display = 'none';
+                  commentDiv.querySelector('.edit-comment-form').style.display = 'block';
+                });
+              });
+
+              document.querySelectorAll('.cancel-edit').forEach(function(cancelLink) {
+                cancelLink.addEventListener('click', function() {
+                  let commentDiv = cancelLink.closest('div');
+                  commentDiv.querySelector('.comment-text').style.display = 'block';
+                  commentDiv.querySelector('.edit-comment-form').style.display = 'none';
+                });
+              });
+            </script>
+              
           </div>
         </div>
       </div>
 
     <% end %>
+  </div>
+</div>
+
+<div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="commentModalLabel">Add Comment</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <%= form_with url: "/insert_comment", method: :post do %>
+          <div class="mb-3">
+            <label for="comment_body" class="form-label">Your Comment:</label>
+            <textarea name="query_body" id="comment_body" class="form-control"></textarea>
+            <input type="hidden" name="query_workout_id" id="current_workout_id">
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        <% end %>
+      </div>
+    </div>
   </div>
 </div>

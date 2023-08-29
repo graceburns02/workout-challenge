@@ -15,6 +15,8 @@ gem 'sassc-rails'
 gem 'faker'
 gem "carrierwave"
 gem "cloudinary"
+gem 'bootstrap', '~> 5.1.1'
+
 
 group :development do
   gem 'htmlbeautifier'

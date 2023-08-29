@@ -34,16 +34,15 @@ class WorkoutsController < ApplicationController
   end 
 
   def create
-    activity_name = params.fetch("query_activity").strip.downcase
+    original_activity_name = params.fetch("query_activity").strip.titleize
+    activity_name = original_activity_name.downcase
 
-    # Try finding an existing activity, case-insensitively.
-    existing_activity = Activity.where("LOWER(name) = ?", activity_name).first
 
-    if existing_activity.nil?
-      # No existing activity found. Let's try to create one.
-      activity = Activity.new(name: activity_name)
+    activity = Activity.where("LOWER(name) = ?", activity_name).first_or_initialize(name: activity_name)
+
+    unless activity.persisted?
       unless activity.save
-        # The activity wasn't saved (probably due to the uniqueness constraint).
+        # If the activity wasn't saved due to the uniqueness constraint.
         redirect_to("/workouts", :alert => "Activity already exists in the list.")
         return
       end
@@ -51,27 +50,20 @@ class WorkoutsController < ApplicationController
     
     # ... rest of your code ...
 
-    the_workout = Workout.new
-    the_workout.user_id = session.fetch(:user_id)
-    #the_workout.name = params.fetch("query_name")
-    the_workout.date = params.fetch("query_date")
-    the_workout.description = params.fetch("query_description")
-    the_workout.url = params.fetch(:url)
-    #the_workout.image = params.fetch("input_image")
-    #the_workout.activity = params.fetch("query_activity")
-    the_workout.activity = activity_name  # Or store the activity ID, based on your schema.
+  the_workout = Workout.new
+  the_workout.user_id = session.fetch(:user_id)
+  the_workout.date = params.fetch("query_date")
+  the_workout.description = params.fetch("query_description")
+  the_workout.url = params.fetch(:url)
+  the_workout.activity = original_activity_name
 
-    if the_workout.valid?
-      the_workout.save
-      redirect_to("/workouts", { :notice => "Workout created successfully." })
-    else
-      redirect_to("/workouts", { :alert => the_workout.errors.full_messages.to_sentence })
-    end
+  if the_workout.valid?
+    the_workout.save
+    redirect_to("/workouts", { :notice => "Workout created successfully." })
+  else
+    redirect_to("/workouts", { :alert => the_workout.errors.full_messages.to_sentence })
   end
-
-  def predefined_activities
-    ["4+ mile walk", "Run", "Indoor Cycle", "Outdoor Bike Ride", "Yoga", "Swim", "Dance", "Ski/Snowboard", "Pilates", "Weights", "Barre", "Other"]
-  end
+end
 
   def update
     the_id = params.fetch("path_id")
@@ -101,4 +93,9 @@ class WorkoutsController < ApplicationController
 
     redirect_to("/workouts", { :notice => "Workout deleted successfully."} )
   end
+end
+
+def add_comment
+  @workout = Workout.find_by(id: params[:path_id])
+  @comment = Comment.new
 end

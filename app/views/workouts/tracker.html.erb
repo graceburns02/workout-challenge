@@ -33,7 +33,7 @@
     <thead class="text-center bg-secondary text-white">
       <tr>
         <th class="text-center font-weight-bold">Name</th>
-        <th class="text-center">Week Total</th>
+        <th class="text-center">Current Week Total</th>
         <th class="text-center">Month Total</th>
         <th class="text-center">Amount Owed</th>
       </tr>
@@ -89,3 +89,60 @@
     </tbody>
   </table>
 </div>
+
+<hr>
+
+<div class="container mt-5">
+  <h2 class="text-center">Settlements for Past Months</h2>
+
+  <table class="table table-bordered">
+    <thead class="text-center bg-secondary text-white">
+      <tr>
+        <th class="text-center font-weight-bold">Month</th>
+        <th class="text-center">Name</th>
+        <th class="text-center">Amount Owed</th>
+        <th class="text-center">Owed To</th>
+        <th class="text-center">Settled</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% start_month = Date.new(2023, 8) %> <!-- August 2023 -->
+      <% months_since_start = (Date.today.year - start_month.year) * 12 + (Date.today.month - start_month.month) %>
+      <% months_since_start.times do |i| %>
+        <% past_month = Date.today - i.months %>
+        
+        <% next if Date.today.month == past_month.month && Date.today.year == past_month.year %> <!-- Skip the current month -->
+        
+        <% # Determine the user with the highest workout count for the past month %>
+        <% top_user = @users.max_by { |user| user.workouts.where(date: past_month.all_month).count } %>
+
+        <% @users.each_with_index do |user, index| %>
+          <tr <% if index == @users.size - 1 %>style="border-bottom: 3px solid black;"<% end %>>
+            <td class="text-center font-weight-bold"><%= past_month.strftime('%B %Y') %></td>
+            <td class="text-center"><%= user.first_name %></td>
+
+            <% # Calculate Amount Owed just like in the first table %>
+            <% amount_owed = 0 %>
+            <% current_date = past_month.beginning_of_month %>
+            <% while current_date.month == past_month.month %>
+              <% weekly_count = user.workouts.where(date: current_date..(current_date + 6.days)).count %>
+              <% amount_owed += (3 - weekly_count) * 5 if weekly_count < 3 %>
+              <% current_date += 1.week %>
+            <% end %>
+            <td class="text-center"><%= number_to_currency(amount_owed) %></td>
+
+            <% # Check if the user is the top user for this month %>
+            <td class="text-center"><%= user == top_user ? '-' : top_user.first_name %></td>
+
+            <% # "settled" checkbox, visible for everyone %>
+            <td class="text-center">
+              <input type="checkbox" name="settled_<%= user.id %>_<%= past_month.strftime('%B%Y') %>">
+            </td>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+

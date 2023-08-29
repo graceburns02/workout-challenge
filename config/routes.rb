@@ -12,6 +12,8 @@ Rails.application.routes.draw do
 
   # CREATE
   post("/insert_comment", { :controller => "comments", :action => "create" })
+  get("/workouts/:path_id/add_comment", { :controller => "workouts", :action => "add_comment" })
+
           
   # READ
   get("/comments", { :controller => "comments", :action => "index" })
