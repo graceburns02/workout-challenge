@@ -97,5 +97,7 @@ Rails.application.routes.draw do
   # INJURIES
   resources :injuries, only: [:new, :create]
 
+  # DELETE
+  get("/delete_injury/:path_id", { :controller => "injuries", :action => "destroy" })
 
 end
